@@ -1,0 +1,10 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+
+## macOS
+.DS_Store

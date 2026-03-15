@@ -1,0 +1,6 @@
+@Tome.Api_HostAddress = http://localhost:5133
+
+GET {{Tome.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
