@@ -25,4 +25,11 @@ public class SeriesController(ISeriesService seriesService) : ControllerBase
         var created = await seriesService.CreateAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var deleted = await seriesService.DeleteAsync(id);
+        return deleted ? NoContent() : NotFound();
+    }
 }
