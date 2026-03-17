@@ -12,6 +12,10 @@ public class SeriesController(ISeriesService seriesService) : ControllerBase
     public async Task<ActionResult<IEnumerable<SeriesDto>>> GetAll() =>
         Ok(await seriesService.GetAllAsync());
 
+    [HttpGet("monitored")]
+    public async Task<ActionResult<IEnumerable<SeriesDto>>> GetMonitored() =>
+        Ok(await seriesService.GetMonitoredAsync());
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<SeriesDto>> GetById(int id)
     {

@@ -66,6 +66,42 @@ public class SeriesControllerTests
     }
 
     [Fact]
+    public async Task GetMonitored_WithMonitoredSeries_ReturnsOnlyMonitoredSeries()
+    {
+        // Arrange
+        var monitored = new List<SeriesDto>
+        {
+            new() { Id = 1, Title = "Dune", Type = "Book", Status = "Ended", Monitored = true },
+            new() { Id = 3, Title = "Saga", Type = "Comic", Status = "Ongoing", Monitored = true },
+        };
+        _mockService.Setup(s => s.GetMonitoredAsync()).ReturnsAsync(monitored);
+
+        // Act
+        var result = await _controller.GetMonitored();
+
+        // Assert
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsAssignableFrom<IEnumerable<SeriesDto>>(ok.Value);
+        Assert.Equal(2, returned.Count());
+        Assert.All(returned, s => Assert.True(s.Monitored));
+    }
+
+    [Fact]
+    public async Task GetMonitored_NoMonitoredSeries_ReturnsEmptyList()
+    {
+        // Arrange
+        _mockService.Setup(s => s.GetMonitoredAsync()).ReturnsAsync(new List<SeriesDto>());
+
+        // Act
+        var result = await _controller.GetMonitored();
+
+        // Assert
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsAssignableFrom<IEnumerable<SeriesDto>>(ok.Value);
+        Assert.Empty(returned);
+    }
+
+    [Fact]
     public async Task Create_ValidDto_ReturnsCreated()
     {
         // Arrange
