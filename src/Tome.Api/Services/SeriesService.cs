@@ -31,6 +31,9 @@ public class SeriesService(ISeriesRepository repository) : ISeriesService
         return ToDto(created);
     }
 
+    public async Task<bool> DeleteAsync(int id) =>
+        await repository.DeleteAsync(id);
+
     private static SeriesDto ToDto(Series s) => new()
     {
         Id = s.Id,

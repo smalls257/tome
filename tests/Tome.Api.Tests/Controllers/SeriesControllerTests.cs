@@ -82,4 +82,30 @@ public class SeriesControllerTests
         Assert.Equal("The Expanse", returned.Title);
         Assert.Equal(3, returned.Id);
     }
+
+    [Fact]
+    public async Task Delete_ExistingId_ReturnsNoContent()
+    {
+        // Arrange
+        _mockService.Setup(s => s.DeleteAsync(1)).ReturnsAsync(true);
+
+        // Act
+        var result = await _controller.Delete(1);
+
+        // Assert
+        Assert.IsType<NoContentResult>(result);
+    }
+
+    [Fact]
+    public async Task Delete_NonExistentId_ReturnsNotFound()
+    {
+        // Arrange
+        _mockService.Setup(s => s.DeleteAsync(99)).ReturnsAsync(false);
+
+        // Act
+        var result = await _controller.Delete(99);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result);
+    }
 }
