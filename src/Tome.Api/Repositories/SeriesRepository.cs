@@ -25,4 +25,12 @@ public class SeriesRepository : ISeriesRepository
         _store.Add(series);
         return Task.FromResult(series);
     }
+
+    public Task<bool> DeleteAsync(int id)
+    {
+        var series = _store.FirstOrDefault(s => s.Id == id);
+        if (series is null) return Task.FromResult(false);
+        _store.Remove(series);
+        return Task.FromResult(true);
+    }
 }
