@@ -16,6 +16,9 @@ public class SeriesRepository : ISeriesRepository
     public Task<IEnumerable<Series>> GetAllAsync() =>
         Task.FromResult<IEnumerable<Series>>(_store);
 
+    public Task<IEnumerable<Series>> GetByStatusAsync(SeriesStatus status) =>
+        Task.FromResult<IEnumerable<Series>>(_store.Where(s => s.Status == status).ToList());
+
     public Task<Series?> GetByIdAsync(int id) =>
         Task.FromResult(_store.FirstOrDefault(s => s.Id == id));
 

@@ -82,4 +82,66 @@ public class SeriesControllerTests
         Assert.Equal("The Expanse", returned.Title);
         Assert.Equal(3, returned.Id);
     }
+
+    [Fact]
+    public async Task GetAll_WithStatusFilter_ReturnsMatchingSeries()
+    {
+        // Arrange
+        var ongoing = new List<SeriesDto>
+        {
+            new() { Id = 1, Title = "Saga", Type = "Comic", Status = "Ongoing", Monitored = true },
+            new() { Id = 2, Title = "The Expanse", Type = "Book", Status = "Ongoing", Monitored = false },
+        };
+        _mockService
+            .Setup(s => s.GetByStatusAsync(Models.SeriesStatus.Ongoing))
+            .ReturnsAsync(ongoing);
+
+        // Act
+        var result = await _controller.GetAll(Models.SeriesStatus.Ongoing);
+
+        // Assert
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsAssignableFrom<IEnumerable<SeriesDto>>(ok.Value);
+        Assert.Equal(2, returned.Count());
+        Assert.All(returned, s => Assert.Equal("Ongoing", s.Status));
+    }
+
+    [Fact]
+    public async Task GetAll_WithStatusFilter_NoMatches_ReturnsEmptyArray()
+    {
+        // Arrange
+        _mockService
+            .Setup(s => s.GetByStatusAsync(Models.SeriesStatus.Cancelled))
+            .ReturnsAsync(new List<SeriesDto>());
+
+        // Act
+        var result = await _controller.GetAll(Models.SeriesStatus.Cancelled);
+
+        // Assert
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsAssignableFrom<IEnumerable<SeriesDto>>(ok.Value);
+        Assert.Empty(returned);
+    }
+
+    [Fact]
+    public async Task GetAll_WithoutStatusFilter_CallsGetAllAsync()
+    {
+        // Arrange
+        var allSeries = new List<SeriesDto>
+        {
+            new() { Id = 1, Title = "Dune", Type = "Book", Status = "Ended", Monitored = true },
+            new() { Id = 2, Title = "Saga", Type = "Comic", Status = "Ongoing", Monitored = true },
+        };
+        _mockService.Setup(s => s.GetAllAsync()).ReturnsAsync(allSeries);
+
+        // Act
+        var result = await _controller.GetAll(null);
+
+        // Assert
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsAssignableFrom<IEnumerable<SeriesDto>>(ok.Value);
+        Assert.Equal(2, returned.Count());
+        _mockService.Verify(s => s.GetAllAsync(), Times.Once);
+        _mockService.Verify(s => s.GetByStatusAsync(It.IsAny<Models.SeriesStatus>()), Times.Never);
+    }
 }

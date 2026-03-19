@@ -12,6 +12,12 @@ public class SeriesService(ISeriesRepository repository) : ISeriesService
         return series.Select(ToDto);
     }
 
+    public async Task<IEnumerable<SeriesDto>> GetByStatusAsync(SeriesStatus status)
+    {
+        var series = await repository.GetByStatusAsync(status);
+        return series.Select(ToDto);
+    }
+
     public async Task<SeriesDto?> GetByIdAsync(int id)
     {
         var series = await repository.GetByIdAsync(id);

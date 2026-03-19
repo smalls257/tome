@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Tome.Api.Models;
 using Tome.Api.Models.DTOs;
 using Tome.Api.Services;
 
@@ -9,8 +10,10 @@ namespace Tome.Api.Controllers;
 public class SeriesController(ISeriesService seriesService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<SeriesDto>>> GetAll() =>
-        Ok(await seriesService.GetAllAsync());
+    public async Task<ActionResult<IEnumerable<SeriesDto>>> GetAll([FromQuery] SeriesStatus? status = null) =>
+        Ok(status is null
+            ? await seriesService.GetAllAsync()
+            : await seriesService.GetByStatusAsync(status.Value));
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<SeriesDto>> GetById(int id)
