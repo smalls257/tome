@@ -25,4 +25,11 @@ public class SeriesController(ISeriesService seriesService) : ControllerBase
         var created = await seriesService.CreateAsync(dto);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<SeriesDto>> Update(int id, UpdateSeriesDto dto)
+    {
+        var updated = await seriesService.UpdateAsync(id, dto);
+        return updated is null ? NotFound() : Ok(updated);
+    }
 }
