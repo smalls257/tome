@@ -7,4 +7,5 @@ public interface ISeriesService
     Task<IEnumerable<SeriesDto>> GetAllAsync();
     Task<SeriesDto?> GetByIdAsync(int id);
     Task<SeriesDto> CreateAsync(CreateSeriesDto dto);
+    Task<SeriesDto?> UpdateStatusAsync(int id, UpdateSeriesStatusDto dto);
 }
