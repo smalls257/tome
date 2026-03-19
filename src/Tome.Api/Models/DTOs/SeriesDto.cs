@@ -16,3 +16,8 @@ public class CreateSeriesDto
     public SeriesStatus Status { get; set; } = SeriesStatus.Ongoing;
     public bool Monitored { get; set; } = true;
 }
+
+public class UpdateSeriesStatusDto
+{
+    public SeriesStatus Status { get; set; }
+}

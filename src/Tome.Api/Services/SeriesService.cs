@@ -31,6 +31,12 @@ public class SeriesService(ISeriesRepository repository) : ISeriesService
         return ToDto(created);
     }
 
+    public async Task<SeriesDto?> UpdateStatusAsync(int id, UpdateSeriesStatusDto dto)
+    {
+        var series = await repository.UpdateStatusAsync(id, dto.Status);
+        return series is null ? null : ToDto(series);
+    }
+
     private static SeriesDto ToDto(Series s) => new()
     {
         Id = s.Id,
