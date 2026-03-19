@@ -82,4 +82,36 @@ public class SeriesControllerTests
         Assert.Equal("The Expanse", returned.Title);
         Assert.Equal(3, returned.Id);
     }
+
+    [Fact]
+    public async Task Update_ValidId_ReturnsOkWithUpdatedSeries()
+    {
+        // Arrange
+        var dto = new UpdateSeriesDto { Title = "Dune Messiah", Type = Models.SeriesType.Book, Status = Models.SeriesStatus.Ended, Monitored = false };
+        var updated = new SeriesDto { Id = 1, Title = "Dune Messiah", Type = "Book", Status = "Ended", Monitored = false };
+        _mockService.Setup(s => s.UpdateAsync(1, dto)).ReturnsAsync(updated);
+
+        // Act
+        var result = await _controller.Update(1, dto);
+
+        // Assert
+        var ok = Assert.IsType<OkObjectResult>(result.Result);
+        var returned = Assert.IsType<SeriesDto>(ok.Value);
+        Assert.Equal("Dune Messiah", returned.Title);
+        Assert.Equal(1, returned.Id);
+    }
+
+    [Fact]
+    public async Task Update_InvalidId_ReturnsNotFound()
+    {
+        // Arrange
+        var dto = new UpdateSeriesDto { Title = "Ghost Series", Type = Models.SeriesType.Comic, Status = Models.SeriesStatus.Cancelled, Monitored = false };
+        _mockService.Setup(s => s.UpdateAsync(99, dto)).ReturnsAsync((SeriesDto?)null);
+
+        // Act
+        var result = await _controller.Update(99, dto);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result.Result);
+    }
 }

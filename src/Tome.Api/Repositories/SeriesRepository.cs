@@ -25,4 +25,17 @@ public class SeriesRepository : ISeriesRepository
         _store.Add(series);
         return Task.FromResult(series);
     }
+
+    public Task<Series?> UpdateAsync(int id, Series series)
+    {
+        var existing = _store.FirstOrDefault(s => s.Id == id);
+        if (existing is null)
+            return Task.FromResult<Series?>(null);
+
+        existing.Title = series.Title;
+        existing.Type = series.Type;
+        existing.Status = series.Status;
+        existing.Monitored = series.Monitored;
+        return Task.FromResult<Series?>(existing);
+    }
 }
